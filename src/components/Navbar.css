@@ -1,0 +1,88 @@
+.navbar {
+  background-color: #fff;
+  color: #222;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.navbar .logo {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #222;
+  letter-spacing: 1px;
+  text-shadow: none;
+}
+
+.navbar ul {
+  list-style: none;
+  display: flex;
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar li {
+  font-size: 1.1rem;
+}
+
+.navbar a,
+.logout-btn {
+  color: #222;
+  text-decoration: none;
+  padding: 8px 18px;
+  border-radius: 5px;
+  transition: background 0.2s, color 0.2s;
+  background: none;
+  font-weight: 500;
+  text-shadow: none;
+}
+
+.navbar a:hover,
+.logout-btn:hover {
+  background: #f2f2f2;
+  color: #0077cc;
+}
+
+.logout-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.navbar .search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.navbar .search-bar input[type="text"] {
+  padding: 7px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  outline: none;
+  transition: border 0.2s;
+  background: #fafafa;
+}
+
+.navbar .search-bar input[type="text"]:focus {
+  border-color: #0077cc;
+}
+.navbar .search-bar button {
+  background: #0077cc;
+  color: #fff;
+  border: none;
+  padding: 7px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s, color 0.2s;
+}
