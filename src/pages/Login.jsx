@@ -1,43 +1,32 @@
 import { useState } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import './Login.css';
 
 function Login({ setLoggedIn }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    if (username === 'Spydey' && password === 'karan123') {
-      localStorage.setItem('loggedIn', 'true');
+  const handleLogin = async () => {
+    try {
+      const res = await axios.post('http://localhost:5000/login', {
+        username,
+        password,
+      });
+
+      localStorage.setItem('token', res.data.token); // or use cookies for better security
       setLoggedIn(true);
       navigate('/admin');
-    } else {
-      alert('Invalid credentials');
+    } catch (err) {
+      alert(err.response?.data?.error || 'Login failed');
     }
   };
 
   return (
-    <div className="login-container">
-      <h2>Admin Login</h2>
-      <form onSubmit={handleLogin} className="login-form">
-        <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit" className="neon-btn">Login</button>
-      </form>
+    <div>
+      <input value={username} onChange={e => setUsername(e.target.value)} placeholder="Username" />
+      <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" />
+      <button onClick={handleLogin}>Login</button>
     </div>
   );
 }

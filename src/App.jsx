@@ -11,31 +11,29 @@ import { ThemeProvider } from './ThemeContext';
 import './App.css';
 import './pages/theme.css';
 
-
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
 
-  useEffect(() => {
-    const storedLogin = localStorage.getItem('loggedIn');
-    if (storedLogin === 'true') setLoggedIn(true);
-  }, []);
+useEffect(() => {
+  const token = localStorage.getItem('token');
+  if (token) setLoggedIn(true);
+}, []);
+
 
   return (
-  
-      <ThemeProvider>
-        <Router>
-          <Navbar loggedIn={loggedIn} setLoggedIn={setLoggedIn} />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login setLoggedIn={setLoggedIn} />} />
-            <Route path="/admin" element={loggedIn ? <Admin /> : <Login setLoggedIn={setLoggedIn} />} />
-            <Route path="/events" element={<Events />} />
-            <Route path="/gallery" element={<Gallery />} />
-            <Route path="/notices" element={<Notices />} />
-          </Routes>
-        </Router>
-      </ThemeProvider>
-    
+    <ThemeProvider>
+      <Router>
+        <Navbar loggedIn={loggedIn} setLoggedIn={setLoggedIn} />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login setLoggedIn={setLoggedIn} />} />
+          <Route path="/admin" element={loggedIn ? <Admin /> : <Login setLoggedIn={setLoggedIn} />} />
+          <Route path="/events" element={<Events />} />
+          <Route path="/gallery" element={<Gallery />} />
+          <Route path="/notices" element={<Notices />} />
+        </Routes>
+      </Router>
+    </ThemeProvider>
   );
 }
 
