@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 import './Admin.css';
-
 
 function Admin() {
   const [events, setEvents] = useState([]);
@@ -8,48 +8,65 @@ function Admin() {
   const [newEvent, setNewEvent] = useState('');
   const [newNotice, setNewNotice] = useState('');
 
-  useEffect(() => {
+  const fetchData = async () => {
     try {
-      const storedEvents = JSON.parse(localStorage.getItem('events')) || [];
-      const storedNotices = JSON.parse(localStorage.getItem('notices')) || [];
-      setEvents(Array.isArray(storedEvents) ? storedEvents : []);
-      setNotices(Array.isArray(storedNotices) ? storedNotices : []);
+      const [eventsRes, noticesRes] = await Promise.all([
+        axios.get('http://localhost:5000/api/events'),
+        axios.get('http://localhost:5000/api/notices')
+      ]);
+      setEvents(eventsRes.data || []);
+      setNotices(noticesRes.data || []);
     } catch (err) {
-      console.error('Error reading localStorage:', err);
-      setEvents([]);
-      setNotices([]);
+      console.error('Error fetching data:', err);
     }
+  };
+
+  useEffect(() => {
+    fetchData();
   }, []);
 
-  const addEvent = () => {
-    const updatedEvents = [...events, newEvent];
-    setEvents(updatedEvents);
-    localStorage.setItem('events', JSON.stringify(updatedEvents));
-    setNewEvent('');
+  const addEvent = async () => {
+    try {
+      await axios.post('http://localhost:5000/api/events', { name: newEvent });
+      setNewEvent('');
+      fetchData();
+    } catch (err) {
+      console.error('Failed to add event:', err);
+    }
   };
 
-  const deleteEvent = (indexToRemove) => {
-    const updatedEvents = events.filter((_, index) => index !== indexToRemove);
-    setEvents(updatedEvents);
-    localStorage.setItem('events', JSON.stringify(updatedEvents));
+  const deleteEvent = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/events/${id}`);
+      fetchData();
+    } catch (err) {
+      console.error('Failed to delete event:', err);
+    }
   };
 
-  const addNotice = () => {
-    const updatedNotices = [...notices, newNotice];
-    setNotices(updatedNotices);
-    localStorage.setItem('notices', JSON.stringify(updatedNotices));
-    setNewNotice('');
+  const addNotice = async () => {
+    try {
+      await axios.post('http://localhost:5000/api/notices', { text: newNotice });
+      setNewNotice('');
+      fetchData();
+    } catch (err) {
+      console.error('Failed to add notice:', err);
+    }
   };
 
-  const deleteNotice = (indexToRemove) => {
-    const updatedNotices = notices.filter((_, index) => index !== indexToRemove);
-    setNotices(updatedNotices);
-    localStorage.setItem('notices', JSON.stringify(updatedNotices));
+  const deleteNotice = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/notices/${id}`);
+      fetchData();
+    } catch (err) {
+      console.error('Failed to delete notice:', err);
+    }
   };
 
   return (
     <div className="admin-container">
       <h2>Admin Panel</h2>
+
       <div className="admin-section">
         <h3>Events</h3>
         <input
@@ -60,10 +77,10 @@ function Admin() {
         />
         <button className="neon-btn" onClick={addEvent}>Add Event</button>
         <ul>
-          {events.map((event, index) => (
-            <li key={index}>
-              {String(event || 'Unnamed Event')}
-              <button onClick={() => deleteEvent(index)} style={{ marginLeft: '10px' }}>Delete</button>
+          {events.map((event) => (
+            <li key={event._id}>
+              {event.name}
+              <button onClick={() => deleteEvent(event._id)} style={{ marginLeft: '10px' }}>Delete</button>
             </li>
           ))}
         </ul>
@@ -79,10 +96,10 @@ function Admin() {
         />
         <button className="neon-btn" onClick={addNotice}>Add Notice</button>
         <ul>
-          {notices.map((notice, index) => (
-            <li key={index}>
-              {String(notice || 'Unnamed Notice')}
-              <button onClick={() => deleteNotice(index)} style={{ marginLeft: '10px' }}>Delete</button>
+          {notices.map((notice) => (
+            <li key={notice._id}>
+              {notice.text}
+              <button onClick={() => deleteNotice(notice._id)} style={{ marginLeft: '10px' }}>Delete</button>
             </li>
           ))}
         </ul>
